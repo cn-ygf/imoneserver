@@ -19,3 +19,4 @@
 *.exe
 *.a
 *.so
+go.sum
