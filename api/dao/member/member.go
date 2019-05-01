@@ -31,3 +31,13 @@ func (d *Dao) Members() (res []*member.Member, err error) {
 	}
 	return
 }
+
+// 根据邮箱获取用户
+func (d *Dao) MemberByEmail(email string)(res *member.Member, err error) {
+	res = &member.Member{}
+	if err = d.db.Where("email = ?", email).First(res).Error; err != nil {
+		log.Printf("d.db.Where error(%v)", err)
+		return nil, err
+	}
+	return
+}

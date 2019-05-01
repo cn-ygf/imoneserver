@@ -48,3 +48,8 @@ func NewService(serviceType ...string) imoneserver.Service {
 	serviceMgr.Add(s)
 	return s
 }
+
+// 获取一个Service
+func GetService(name string)imoneserver.Service{
+	return serviceMgr.GetService(name)
+}
