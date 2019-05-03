@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/cn-ygf/imoneserver"
 	"github.com/cn-ygf/yin"
-	"log"
 )
 
 // api服务
@@ -21,12 +20,12 @@ func (api *apiService) Run(param ...interface{}) {
 	}
 	RegisterRouter(api.http)
 	api.http.Run()
-	log.Printf("%s: service is runing\n", api.Name())
+	log.Infof("%s: service is running\n", api.Name())
 }
 
 func (api *apiService) Close() {
 	api.http.Close()
-	log.Printf("%s: service is closed\n", api.Name())
+	log.Infof("%s: service is closed\n", api.Name())
 }
 
 func (api *apiService) TypeName() string {

@@ -1,0 +1,15 @@
+syntax = "proto2";
+package proto;
+
+// 首次握手请求
+message HelloREQ {
+  required int64 time = 1;
+  required string msg = 2;
+}
+
+// 握手应答
+message HelloACK {
+  required int32 code = 1;
+  required string msg = 2;
+  required bytes pub = 3;
+}

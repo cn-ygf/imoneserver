@@ -1,0 +1,14 @@
+syntax = "proto2";
+package proto;
+
+// 登录请求
+message LoginREQ {
+  required int64 time = 1;          // 当前时间
+  required bytes loginsession = 2;  // 登录令牌
+}
+
+// 登录应答
+message LoginACK {
+    required int32 code = 1;        // 状态码
+    required bytes sessionkey = 2;  // 会话密钥
+}

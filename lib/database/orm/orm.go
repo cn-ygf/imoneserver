@@ -1,9 +1,9 @@
 package orm
 
 import (
+	"github.com/davyxu/golog"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"log"
 	"time"
 )
 
@@ -15,16 +15,18 @@ type Config struct {
 	IdleTimeout time.Duration // connect max life time.
 }
 
+var log = golog.New("goorm")
+
 type ormLog struct{}
 
 func (l ormLog) Print(v ...interface{}) {
-	log.Println(v)
+	log.Errorln(v)
 }
 
 func NewMySQL(c *Config) (db *gorm.DB) {
 	db, err := gorm.Open("mysql", c.DSN)
 	if err != nil {
-		log.Printf("db dsn(%s) error: %v", c.DSN, err)
+		log.Errorln("db dsn(%s) error: %v", c.DSN, err)
 		panic(err)
 	}
 	/*db.DB().SetMaxIdleConns(c.Idle)

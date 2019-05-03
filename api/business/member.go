@@ -8,7 +8,6 @@ import (
 	"github.com/cn-ygf/imoneserver/service"
 	"github.com/cn-ygf/imoneserver/session"
 	"github.com/cn-ygf/yin"
-	"log"
 )
 
 var (
@@ -23,51 +22,51 @@ func init() {
 
 // 用户登录
 func Login(ctx yin.Context) {
-	email:= ctx.Body().Get("email")
+	email := ctx.Body().Get("email")
 	password := ctx.Body().Get("password")
 	vfcode := ctx.Body().Get("vfcode")
 	vfsession := ctx.Body().Get("vfsession")
-	m,err := d.MemberByEmail(email)
-	if err != nil{
-		log.Println(err)
+	m, err := d.MemberByEmail(email)
+	if err != nil {
+		log.Errorln(err)
 		ctx.ERROR(nil)
 		return
 	}
-	if m.Id  == 0{
+	if m.Id == 0 {
 		ctx.SUCCESS(map[string]interface{}{
-			"code":10001,
-			"msg":"email or password error",
+			"code": 10001,
+			"msg":  "email or password error",
 		})
 		return
 	}
 	trueVfCode := GetVfCode(vfsession)
 	if len(trueVfCode) < 1 {
 		ctx.SUCCESS(map[string]interface{}{
-			"code":10002,
-			"msg":"vfcode error",
+			"code": 10002,
+			"msg":  "vfcode error",
 		})
 		return
 	}
 	if vfcode != trueVfCode {
 		ctx.SUCCESS(map[string]interface{}{
-			"code":10002,
-			"msg":"vfcode error",
+			"code": 10002,
+			"msg":  "vfcode error",
 		})
 		return
 	}
-	truePassword := crypto.Md5(fmt.Sprintf("%simone2019%s",m.Password,trueVfCode))
-	if password != truePassword{
+	truePassword := crypto.Md5(fmt.Sprintf("%simone2019%s", m.Password, trueVfCode))
+	if password != truePassword {
 		ctx.SUCCESS(map[string]interface{}{
-			"code":10001,
-			"msg":"email or password error",
+			"code": 10001,
+			"msg":  "email or password error",
 		})
 		return
 	}
 	sessionKey := service.GetService("session").(session.SessionMgr).New(m)
 	ctx.SUCCESS(map[string]interface{}{
-		"code":10000,
-		"msg":"success",
-		"sessionkey":sessionKey,//TODO
+		"code":       10000,
+		"msg":        "success",
+		"sessionkey": sessionKey, //TODO
 	})
 }
 

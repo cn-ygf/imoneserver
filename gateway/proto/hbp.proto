@@ -1,0 +1,13 @@
+syntax = "proto2";
+package proto;
+
+// 心跳包请求
+message HBPREQ {
+  required int64 time = 1;
+  required string msg = 2;
+}
+
+// 心跳包应答
+message HBPACK {
+  required int32 code = 1;
+}
