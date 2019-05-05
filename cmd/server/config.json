@@ -1,0 +1,9 @@
+{
+  "gateway_bind" : "0.0.0.0:9001",
+  "api_bind" : "0.0.0.0:9000",
+  "api_version" : "v1",
+  "mysql_dsn" : "root:root@/im_one?charset=utf8&parseTime=True&loc=Local",
+  "session_mod": "redis",
+  "redis": "127.0.0.1:6379",
+  "storage_dir": "E:\\Code\\Project\\imone\\object"
+}

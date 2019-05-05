@@ -3,6 +3,7 @@ package main
 import (
 	_ "github.com/cn-ygf/imoneserver/api"
 	_ "github.com/cn-ygf/imoneserver/gateway"
+	"github.com/cn-ygf/imoneserver/lib/config"
 	"github.com/cn-ygf/imoneserver/service"
 	_ "github.com/cn-ygf/imoneserver/session"
 	"github.com/davyxu/golog"
@@ -14,16 +15,25 @@ import (
 var log = golog.New("imone")
 
 func main() {
-	//log.SetFlags(log.Lshortfile | log.LstdFlags)
-
+	// 加载配置文件
+	if len(os.Args) < 2 {
+		log.Errorln("Configure file not find!")
+		return
+	}
+	// 加载配置文件
+	err := config.Load(os.Args[1])
+	if err != nil {
+		log.Errorf("Configure file is load failed!Error:%s\n", err.Error())
+		return
+	}
 	// 启动api服务
 	api := service.NewService("api", "api v1")
-	api.Run("127.0.0.1:9000")
+	api.Run(config.GetString("api_bind"), config.GetString("api_version"))
 
 	// 启动gateway服务
 	// TODO
 	gate := service.NewService("gateway")
-	gate.Run("127.0.0.1:9001")
+	gate.Run(config.GetString("gateway_bind"))
 	// 启动对象存储服务
 	// TODO
 

@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/cn-ygf/imoneserver"
+	"github.com/cn-ygf/imoneserver/api/business"
 	"github.com/cn-ygf/yin"
 )
 
@@ -13,12 +14,17 @@ type apiService struct {
 }
 
 func (api *apiService) Run(param ...interface{}) {
+	version := "v1"
 	if len(param) < 1 {
 		api.http = yin.Default()
 	} else {
 		api.http = yin.New(param[0].(string))
+		if len(param) > 1 {
+			version = param[1].(string)
+		}
 	}
-	RegisterRouter(api.http)
+	business.Init()
+	RegisterRouter(api.http, version)
 	api.http.Run()
 	log.Infof("%s: service is running\n", api.Name())
 }

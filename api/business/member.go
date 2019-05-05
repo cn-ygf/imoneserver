@@ -3,6 +3,8 @@ package business
 import (
 	"fmt"
 	"github.com/cn-ygf/imoneserver/api/dao/member"
+	member2 "github.com/cn-ygf/imoneserver/api/model/member"
+	"github.com/cn-ygf/imoneserver/lib/config"
 	"github.com/cn-ygf/imoneserver/lib/crypto"
 	"github.com/cn-ygf/imoneserver/lib/database/orm"
 	"github.com/cn-ygf/imoneserver/service"
@@ -14,9 +16,9 @@ var (
 	d *member.Dao
 )
 
-func init() {
+func Init() {
 	d = member.New(&orm.Config{
-		DSN: "root:root@/im_one?charset=utf8&parseTime=True&loc=Local",
+		DSN: config.GetString("mysql_dsn"),
 	})
 }
 
@@ -68,6 +70,7 @@ func Login(ctx yin.Context) {
 		"msg":        "success",
 		"sessionkey": sessionKey, //TODO
 	})
+	log.Debugln("sessionkey:", sessionKey)
 }
 
 func Member(ctx yin.Context) {
@@ -77,4 +80,42 @@ func Member(ctx yin.Context) {
 		return
 	}
 	ctx.JSON(200, res)
+}
+
+// 获取用户信息
+func MemberInfo(ctx yin.Context) {
+	sessionKey := ctx.Body().Get("sessionkey")
+	if len(sessionKey) != 32 {
+		ctx.ERROR(nil)
+		return
+	}
+	sess := service.GetService("session").(session.SessionMgr).Get(sessionKey)
+	if sess == nil {
+		// session过期或不存在
+		ctx.ERROR(map[string]interface{}{
+			"code": 10001,
+			"msg":  "session error",
+		})
+		return
+	}
+	// 取得member对象
+	m := sess.Object().(*member2.Member)
+	ctx.SUCCESS(map[string]interface{}{
+		"code": 10000,
+		"msg":  "success",
+		"member": map[string]interface{}{
+			"id":      m.Id,
+			"email":   m.Email,
+			"name":    m.Name,
+			"nick":    m.Nick,
+			"head":    m.Head,
+			"current": m.Current,
+			"phone":   m.Phone,
+		},
+	})
+}
+
+// 获取联系人
+func Contacts(ctx yin.Context) {
+	// TODO
 }
