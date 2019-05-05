@@ -56,6 +56,7 @@ type Session interface {
 	LastDate() int64              // 最后一次连接时间
 	EvSession() cellnet.Session   // 连接成功的会话
 	SetEvSession(cellnet.Session) // 关联会话
+	SetObject(interface{})        // 更新member对象
 }
 
 type coreSession struct {
@@ -89,4 +90,8 @@ func (core *coreSession) EvSession() cellnet.Session {
 }
 func (core *coreSession) SetEvSession(s cellnet.Session) {
 	core.evsess = s
+}
+
+func (core *coreSession) SetObject(obj interface{}) {
+	core.obj = obj.(*member.Member)
 }

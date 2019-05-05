@@ -100,17 +100,28 @@ func MemberInfo(ctx yin.Context) {
 	}
 	// 取得member对象
 	m := sess.Object().(*member2.Member)
+	// 数据库操作
+	newMember, err := d.MemberByEmail(m.Email)
+	if err != nil {
+		ctx.ERROR(map[string]interface{}{
+			"code": 10002,
+			"msg":  "session error",
+		})
+		return
+	}
+	// 写入object
+	sess.SetObject(newMember)
 	ctx.SUCCESS(map[string]interface{}{
 		"code": 10000,
 		"msg":  "success",
 		"member": map[string]interface{}{
-			"id":      m.Id,
-			"email":   m.Email,
-			"name":    m.Name,
-			"nick":    m.Nick,
-			"head":    m.Head,
-			"current": m.Current,
-			"phone":   m.Phone,
+			"id":      newMember.Id,
+			"email":   newMember.Email,
+			"name":    newMember.Name,
+			"nick":    newMember.Nick,
+			"head":    newMember.Head,
+			"current": newMember.Current,
+			"phone":   newMember.Phone,
 		},
 	})
 }
